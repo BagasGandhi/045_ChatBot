@@ -66,3 +66,29 @@ app.post("/api/chat", async (req, res) => {
         const decoder = new TextDecoder();
 
         let buffer = "";
+
+        function processLine(line) {
+            const trimmedLine = line.trim();
+
+            if (!trimmedLine.startsWith("data:")) {
+                return;
+            }
+
+            const data = trimmedLine.slice(5).trim();
+
+            if (data === "[DONE]") {
+                return;
+            }
+
+            try {
+                const jsonData = JSON.parse(data);
+
+                const content =
+                    jsonData.choices?.[0]?.delta?.content;
+
+                if (typeof content === "string" && content.length > 0) {
+if (content) {
+    res.write(
+        `data: ${JSON.stringify(content)}\n\n`
+    );
+}
