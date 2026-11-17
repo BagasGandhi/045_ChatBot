@@ -92,3 +92,13 @@ if (content) {
         `data: ${JSON.stringify(content)}\n\n`
     );
 }
+                }
+
+                if (jsonData.error) {
+                    console.error("Stream API Error:", jsonData.error);
+                }
+
+            } catch (error) {
+                console.error("Gagal parsing SSE:", error);
+            }
+        }
