@@ -26,17 +26,17 @@ app.post("/api/chat", async (req, res) => {
         }
 
         const response = await fetch(
-            "https://openrouter.ai/api/v1/chat/completions",
+            "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
             {
                 method: "POST",
 
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`
+                    "Authorization": `Bearer ${process.env.GEMINI_API_KEY}`
                 },
 
                 body: JSON.stringify({
-                    model: "inclusionai/ling-3.2-flash:free",
+                    model: "gemini-3.8-flash",
                     messages: messages,
                     temperature: 0.7,
                     max_tokens: 1000,
@@ -46,14 +46,19 @@ app.post("/api/chat", async (req, res) => {
         );
 
         if (!response.ok) {
-            const errorData = await response.text();
+    const errorData = await response.text();
+    console.error("Gemini API Error:", errorData);
 
-            console.error("OpenRouter Error:", errorData);
+    if (response.status === 503) {
+        return res.status(503).json({
+            error: "Server AI sedang sibuk, coba kirim pesan lagi sebentar ya."
+        });
+    }
 
-            return res.status(response.status).json({
-                error: errorData
-            });
-        }
+    return res.status(response.status).json({
+        error: errorData
+    });
+}
 
         // Header SSE
         res.setHeader("Content-Type", "text/event-stream");
