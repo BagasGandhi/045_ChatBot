@@ -23,7 +23,7 @@ app.post("/api/chat", async (req, res) => {
             });
         }
 
-  const response = await fetch(
+        const response = await fetch(
             "https://openrouter.ai/api/v1/chat/completions",
             {
                 method: "POST",
@@ -42,3 +42,13 @@ app.post("/api/chat", async (req, res) => {
                 })
             }
         );
+
+        if (!response.ok) {
+            const errorData = await response.text();
+
+            console.error("OpenRouter Error:", errorData);
+
+            return res.status(response.status).json({
+                error: errorData
+            });
+        }
