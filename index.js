@@ -128,3 +128,15 @@ if (content) {
                 processLine(line);
             }
         }
+
+        // Proses sisa data
+        buffer += decoder.decode();
+
+        if (buffer.trim()) {
+            processLine(buffer);
+        }
+
+        if (!res.destroyed && !res.writableEnded) {
+            res.write("data: [DONE]\n\n");
+            res.end();
+        }
